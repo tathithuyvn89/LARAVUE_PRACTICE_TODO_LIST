@@ -176,15 +176,8 @@ export default {
         name: '',
         list_userId: [],
       },
-
       rules: {
-        name: [
-          {
-            required: true,
-            message: 'Name is required i18n',
-            trigger: ['blur', 'change'],
-          },
-        ],
+        name: [{ required: true, message: 'Title is required i18n', trigger: 'blur' }],
       },
     };
   },

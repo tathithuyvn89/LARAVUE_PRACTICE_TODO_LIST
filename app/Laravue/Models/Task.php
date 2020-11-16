@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $fillable =['title','start_date','finish_date','user_id','group_id'];
+    protected $fillable =['title','start_date','finish_date','user_id','group_id','content'];
 
     public function group() {
         return $this->belongsTo('App\Laravue\Models\Group');

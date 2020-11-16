@@ -23,7 +23,7 @@ class TaskController extends Controller
         $limit = Arr::get($searchParams,'limit',static::ITEM_PER_PAGE);
         $group = Arr::get($searchParams,'group','');
         $keyword = Arr::get($searchParams,'keyword','');   
-         $current_page = Arr::get($searchParams,'current_page',1);
+         $current_page = Arr::get($searchParams,'page',1);
         if(!empty($group)) {
             $taskQuery->whereHas('group', function($q) use ($group) {$q->where('name',$group);});
         }
@@ -41,10 +41,11 @@ class TaskController extends Controller
         foreach ($request->list as $data) {
             Task::create([
                 'title'=>$data['title'],
+                'content'=>$data['content'],
                 'start_date'=>$data['start_date'],
                 'finish_date'=>$data['finish_date'],
-                'user_id'=>$data['user_id'],
-                'group_id'=>$data['group_id'],
+                'user_id'=>$data['user'],
+                'group_id'=>$data['group'],
             ]);
         }
       return response()->json(['message'=>'Create success','data'=>Task::all()],200);
@@ -76,18 +77,19 @@ class TaskController extends Controller
           ],403);
       } else {
           $title = $request->get('title');
-          $found = Task::where('title',$title)->first();
+        //   $found = Task::where('title',$title)->first();
 
-          if($found && $found->id !==$id) {
-              return response()->json(['Title has been taken'],403);
-          }
+        //   if($found && $found->id !==$id) {
+        //       return response()->json(['Title has been taken'],403);
+        //   }
 
           
           $task->title= $title;
           $task->start_date= $request->get('start_date');
           $task->finish_date = $request->get('finish_date');
-          $task->user_id = $request->get('user_id');
-          $task->group_id = $request->get('group_id');
+          $task->user_id = $request->get('user');
+          $task->group_id = $request->get('group');
+          $task->content = $request->get('content');
           $task->save();
           return new TaskResource($task);
       }

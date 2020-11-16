@@ -66,7 +66,17 @@ class GroupController extends Controller
         if(!$group){
             return response()->json(['message'=>'Not Found'],404);
         }
-        return new GroupResource($group);
+        // return new GroupResource($group);
+        // return response()->json([
+        //     "id"=>$group->id,
+        //     "name"=>$group->name,
+        //     "users"=>$group->users,-
+        // ]);
+
+        return response()->json([
+            'data'=>new GroupResource($group),
+            'users_list'=>$group->users,
+        ]);
     }
 
     /**
@@ -90,7 +100,9 @@ class GroupController extends Controller
        $group->name = $request->name;
        
        $group->save();
-       
+       //tai day cung co the su dung detach($list_id) cu sau do attach list_id moi vao
+       //Hay thu voi phuong thuc $group ->roles()->sync([1,2,3]); =>giong nhu detach; syncWithoutDetaching([1,2,3])=>se chi luu gia tri nay tai bang trung gian
+      // thi se chi luu nhung gia tri moi nay va khong luu them nhung gia tri khac
         DB::table('users_groups')->where('group_id',$group->id)->delete();
        $group->users()->attach($request->list_userId);
        return response()->json(['message'=>'Update success'],201);

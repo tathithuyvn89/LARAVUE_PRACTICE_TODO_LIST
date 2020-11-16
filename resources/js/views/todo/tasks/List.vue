@@ -72,6 +72,11 @@
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
+       <el-table-column align="center" label="Content i18n">
+        <template slot-scope="scope">
+          <span>{{ scope.row.content }}</span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="Persion Incharge i18n">
         <template slot-scope="scope">
           <span>{{ scope.row.user.name }}</span>
@@ -94,12 +99,14 @@
       </el-table-column>
       <el-table-column align="center" label="Edit i18n">
         <template slot-scope="scope">
-          <el-button
-            type="primary"
-            size="small"
-            icon="el-icon-edit"
-            @click="openPopCreate(scope.row.id)"
-          >Edit i18n</el-button>
+          <router-link :to="'/todo/tasks/edit/'+scope.row.id">
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-edit"
+              @click="openPopCreate(scope.row.id)"
+            >Edit i18n</el-button>
+          </router-link>
         </template>
       </el-table-column>
       <el-table-column align="center" label="Delete i18n">
@@ -118,58 +125,12 @@
     <pagination
       v-show="total > 0"
       :total="total"
-      :page:sync="listQuery.page"
+      :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <!-- Pop-up Create and Edit Group -->
-    <el-dialog
-      :title="createOrEditTitle"
-      :visible.sync="diglogCreateOrEdit"
-      width="400px"
-      @close="closeDialog('ruleForm')"
-    >
-      <div v-loading="isProcess" class="form-container">
-        <el-form
-          ref="ruleForm"
-          :model="ruleForm"
-          :rules="rules"
-          class="ruleForm"
-        >
-          <el-form-item label="Name i18n" prop="name">
-            <el-input
-              v-model="ruleForm.name"
-              placeholder="Entern Name of group i18n"
-            />
-          </el-form-item>
-          <el-form-item label="Member i18n" prop="list_userId">
-            <el-select
-              v-model="ruleForm.list_userId"
-              multiple
-              filterable
-              default-first-option
-              style="width: 100%"
-              placeholder="Please chose member i18n"
-            >
-              <el-option
-                v-for="(item, index) in users"
-                :key="index"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="diglogCreateOrEdit = false">
-            Close i18n
-          </el-button>
-          <el-button type="success" :disabled="isProcess" @click="submit">
-            SUBMIT i18n
-          </el-button>
-        </div>
-      </div>
-    </el-dialog>
+    <!-- Pop-up Delete Task -->
+
     <el-dialog
       title="Delete dialog i18n"
       :visible.sync="dialogVisibleDelete"
@@ -196,11 +157,12 @@ import {
   // fetchTask,
   // createTask,
   // updateTask,
-  // forceDelete,
+  forceDelete,
 } from '@/api/task';
 
 import { fetchList } from '@/api/group';
 import Pagination from '@/components/Pagination';
+
 export default {
   name: 'ListGroup',
   components: { Pagination },
@@ -218,7 +180,6 @@ export default {
       createOrEditTitle: '',
       total: 0,
       selectedItem: {},
-      diglogCreateOrEdit: false,
       isProcess: false,
       tempActionDelete: '',
       dialogVisibleDelete: false,
@@ -251,7 +212,7 @@ export default {
       this.listTasks = response.data;
 
       this.total = response.meta.total;
-
+      // this.listQuery.limit = response.meta.per_page;
       console.log('List Group', this.listTasks);
       console.log('this.total', this.total);
     },
@@ -267,8 +228,7 @@ export default {
     },
     // When click button create => Dialog Create or Edit open
     create() {
-      this.diglogCreateOrEdit = true;
-      this.createOrEditTitle = 'Create new Group i18n';
+      this.$router.push({ path: '/todo/tasks/create' });
     },
     // Create feature delete many item
     handleDeleteMany() {
@@ -298,9 +258,65 @@ export default {
         this.multipleSelection.push(val[i].id);
       }
     },
-    submitConfirmDelete() {},
-    deleteMany() {},
-    deleteOne(groupValue) {},
+    submitConfirmDelete() {
+      if (this.tempActionDelete === 'Delete Many') {
+        this.deleteMany();
+      } else {
+        this.deleteOne(this.selectedItem);
+      }
+    },
+    async deleteMany() {
+      var lengthData = 0;
+      var dataDelete = Object.values(this.multipleSelection);
+      if (this.multipleSelection.length === 0) {
+        this.$message({
+          message: 'No Task selected i18n',
+          type: 'warning',
+        });
+      } else if (this.multipleSelection.length > 0) {
+        lengthData = this.listQuery.limit - this.multipleSelection.length;
+        if (lengthData < 1) {
+          this.listQuery.page -= this.listQuery.page;
+        }
+
+        const resDeleteMany = await forceDelete({ list_id: dataDelete });
+        console.log('Delete list', resDeleteMany);
+        if (resDeleteMany.message === 'Delete Success') {
+          this.$message({
+            message: 'Delete many success i18n',
+            type: 'success',
+          });
+          this.listLoading = true;
+          this.handleFilter();
+          this.listLoading = false;
+          this.dialogVisibleDelete = false;
+        } else {
+          this.$message({
+            message: 'Delete many fail i18n',
+            type: 'error',
+          });
+        }
+      }
+    },
+    async deleteOne(row) {
+      const resDeleteMany = await forceDelete({ list_id: [row.id] });
+      console.log('Delete list', resDeleteMany);
+      if (resDeleteMany.message === 'Delete Success') {
+        this.$message({
+          message: 'Delete one success i18n',
+          type: 'success',
+        });
+        this.listLoading = true;
+        this.handleFilter();
+        this.listLoading = false;
+        this.dialogVisibleDelete = false;
+      } else {
+        this.$message({
+          message: 'Delete one fail i18n',
+          type: 'error',
+        });
+      }
+    },
     submit() {},
     submitForm(formName) {},
   },
