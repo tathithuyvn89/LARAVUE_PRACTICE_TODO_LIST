@@ -1,11 +1,5 @@
 <?php
-/**
- * File UserController.php
- *
- * @author Tuan Duong <bacduong@gmail.com>
- * @package Laravue
- * @version 1.0
- */
+
 
 namespace App\Http\Controllers\Api;
 
@@ -62,12 +56,6 @@ class UserController extends BaseController
         return UserResource::collection($userQuery->paginate($limit));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validator = Validator::make(
@@ -103,8 +91,9 @@ class UserController extends BaseController
      * @param  User $user
      * @return UserResource|\Illuminate\Http\JsonResponse
      */
-    public function show(User $user)
-    {
+    public function show($id)
+    {   
+        $user = User::find($id);
         return new UserResource($user);
     }
 

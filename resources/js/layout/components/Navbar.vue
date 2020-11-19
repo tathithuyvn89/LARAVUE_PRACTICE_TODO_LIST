@@ -6,6 +6,7 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+
         <search id="header-search" class="right-menu-item" />
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -16,7 +17,13 @@
 
         <lang-select class="right-menu-item hover-effect" />
       </template>
+      <!-- Tao ra thong bao tai day -->
+      <router-link to="/prenttasks">
+        <el-badge :value="notificationForTask" class="item" type="danger">
+          <i class="el-icon-message-solid" />
 
+        </el-badge>
+      </router-link>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'/128'" class="user-avatar">
@@ -33,6 +40,7 @@
               {{ $t('navbar.profile') }}
             </el-dropdown-item>
           </router-link>
+
           <a target="_blank" href="https://github.com/tuandm/laravue/">
             <el-dropdown-item>
               {{ $t('navbar.github') }}
@@ -40,6 +48,10 @@
           </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
+          </el-dropdown-item>
+          <el-dropdown-item class="clearfix">
+            comments
+            <el-badge class="mark" :value="12" />
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -55,7 +67,8 @@ import Screenfull from '@/components/Screenfull';
 import SizeSelect from '@/components/SizeSelect';
 import LangSelect from '@/components/LangSelect';
 import Search from '@/components/HeaderSearch';
-
+import UserResource from '@/api/user';
+const userResource = new UserResource();
 export default {
   components: {
     Breadcrumb,
@@ -64,6 +77,14 @@ export default {
     SizeSelect,
     LangSelect,
     Search,
+  },
+  data(){
+    return {
+      notificationForTask: 0,
+    };
+  },
+  created() {
+    this.userData();
   },
   computed: {
     ...mapGetters([
@@ -75,6 +96,13 @@ export default {
     ]),
   },
   methods: {
+    async userData() {
+      console.log('Is userId', this.userId);
+      const responData = await userResource.get(this.userId);
+      const listTaskData = responData.data.tasks;
+      this.notificationForTask = listTaskData.filter(task => task.active === 0 || task.active === null).length;
+      console.log('This is response from userData', this.notificationForTask);
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar');
     },

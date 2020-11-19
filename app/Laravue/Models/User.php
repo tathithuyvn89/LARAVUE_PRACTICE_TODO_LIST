@@ -45,8 +45,8 @@ class User extends Authenticatable
 
     }
 
-    public function task() {
-        return $this->belongsTo(App\Laravue\Models\Task);
+    public function tasks() {
+        return $this->hasMany('App\Laravue\Models\Task','user_id');
     }
 
 

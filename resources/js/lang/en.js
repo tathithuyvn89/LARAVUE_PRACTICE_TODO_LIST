@@ -70,9 +70,11 @@ export default {
     administrator: 'Administrator',
     users: 'Users',
     userProfile: 'User Profile',
-
     groups: 'Group',
     tasks: 'Task',
+    admin_setup: 'Task set up for group',
+    childTask: 'Set up child task',
+    child_task: 'List Task',
   },
   navbar: {
     logOut: 'Log Out',

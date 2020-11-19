@@ -52,5 +52,6 @@ class DatabaseSeeder extends Seeder
         $visitor->syncRoles($visitorRole);
         $this->call(CreateGroupsSeeder::class);
         $this->call(UsersTableSeeder::class);
+        $this->call(CreateTaskSeederTable::class);
     }
 }

@@ -17,8 +17,12 @@ class CreateTasksTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('content');
-            $table->foreignId('user_id')->constrainted('users');
-            $table->foreignId('group_id')->constrainted('groups')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('group_id')->constrained('groups')->onDelete('cascade');
+            $table->integer('active')->default(0)->nullable();
+            $table->date('active_date')->nullable();
+            $table->integer('progress')->default(0)->nullable();
+            $table->date('complete_date')->nullable();
             $table->date('start_date');           
             $table->date('finish_date');
             $table->timestamps();

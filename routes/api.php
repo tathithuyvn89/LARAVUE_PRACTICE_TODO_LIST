@@ -31,14 +31,15 @@ Route::namespace('Api')->group(function() {
 
         // Api resource routes
         Route::apiResource('roles', 'RoleController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
-        Route::apiResource('users', 'UserController')->middleware('permission:' . Acl::PERMISSION_USER_MANAGE);
+        Route::apiResource('users', 'UserController');
         Route::get('userslist','UserController@list');
         Route::apiResource('permissions', 'PermissionController')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
         Route::apiResource('groups', 'GroupController')->except('destroy');
         Route::delete('groups/delete','GroupController@forceDelete'); 
-          Route::apiResource('tasks', 'TaskController')->except('destroy');
-        Route::delete('tasks/delete','TaskController@forceDelete');   
-        Route::get('list','TaskController@getList'); 
+        Route::apiResource('tasks', 'TaskController')->except('destroy');
+        Route::apiResource('childTasks', 'ChildTaskController');
+        Route::delete('tasks/delete','TaskController@forceDelete');  
+        Route::get('list','TaskController@getList'); //get List not use pagenation
         // Custom routes
         Route::put('users/{user}', 'UserController@update');
         Route::get('users/{user}/permissions', 'UserController@permissions')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);

@@ -72,7 +72,7 @@
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
-       <el-table-column align="center" label="Content i18n">
+      <el-table-column align="center" label="Content i18n">
         <template slot-scope="scope">
           <span>{{ scope.row.content }}</span>
         </template>
@@ -99,7 +99,7 @@
       </el-table-column>
       <el-table-column align="center" label="Edit i18n">
         <template slot-scope="scope">
-          <router-link :to="'/todo/tasks/edit/'+scope.row.id">
+          <router-link :to="'/setuptask/tasks/edit/'+scope.row.id">
             <el-button
               type="primary"
               size="small"
@@ -228,7 +228,7 @@ export default {
     },
     // When click button create => Dialog Create or Edit open
     create() {
-      this.$router.push({ path: '/todo/tasks/create' });
+      this.$router.push({ path: '/setuptask/tasks/create' });
     },
     // Create feature delete many item
     handleDeleteMany() {

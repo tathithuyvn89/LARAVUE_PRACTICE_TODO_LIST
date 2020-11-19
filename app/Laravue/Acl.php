@@ -42,6 +42,8 @@ final class Acl
     const PERMISSION_ARTICLE_MANAGE = 'manage article';
     const PERMISSION_PERMISSION_MANAGE = 'manage permission';
 
+    const PERMISSION_TASK_EDIT = 'view edit task';
+
     /**
      * @param array $exclusives Exclude some permissions from the list
      * @return array
@@ -56,6 +58,7 @@ final class Acl
             });
 
             return array_values($permissions);
+            
         } catch (\ReflectionException $exception) {
             return [];
         }

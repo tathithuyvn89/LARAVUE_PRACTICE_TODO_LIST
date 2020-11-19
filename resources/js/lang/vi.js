@@ -75,6 +75,9 @@ export default {
     groups: 'Nhom',
     todo: 'Lich lam viec',
     tasks: 'Nhiem vu',
+    admin_setup: 'Thiet lap nhiem vu',
+    childTask: 'Thiet lap task con',
+    child_task: 'Danh sach cong viec',
   },
   navbar: {
     logOut: 'Đăng xuất',

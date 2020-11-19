@@ -2,13 +2,13 @@
 import Layout from '@/layout';
 
 const todoRoutes = {
-  path: '/todo',
+  path: '/setuptask',
   component: Layout,
   redirect: '/todo/groups',
   name: 'To do',
   alwaysShow: true,
   meta: {
-    title: 'To Do',
+    title: 'admin_setup',
     icon: 'skill',
     permissions: ['view menu task'],
   },
@@ -39,6 +39,13 @@ const todoRoutes = {
       meta: { title: 'Edit Task', icon: 'plus', permissions: ['manage task'] },
       hidden: true,
     },
+    // {
+    //   path: 'childtask',
+    //   component: () => import('@/views/child-task/List'),
+    //   name: 'UserEditTask',
+    //   meta: { title: 'Edit Task For User', icon: 'plus', permissions: ['edit-task'] },
+    //   hidden: false,
+    // },
   ],
 };
 
