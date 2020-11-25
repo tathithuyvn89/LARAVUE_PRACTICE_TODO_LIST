@@ -107,6 +107,7 @@ export default {
               .then(() => {
                 this.$router.push({ path: this.redirect || '/', query: this.otherQuery }, onAbort => {});
                 this.loading = false;
+                // this.$store.dispatch('task/listTasksById');
               })
               .catch(() => {
                 this.loading = false;
@@ -133,7 +134,6 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;
-
 /* reset element-ui css */
 .login-container {
   .el-input {
@@ -161,7 +161,6 @@ $light_gray:#eee;
     color: #454545;
   }
 }
-
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

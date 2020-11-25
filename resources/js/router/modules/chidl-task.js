@@ -5,7 +5,7 @@ const childTaskRoutes = {
   component: Layout,
   redirect: '/childtask/list',
   name: 'childTask',
-  alwaysShow: true,
+
   meta: {
     title: 'childTask',
     icon: 'tree',
@@ -13,7 +13,7 @@ const childTaskRoutes = {
   },
   children: [
     {
-      path: '/list',
+      path: 'list',
       component: () => import('@/views/child-task/List'),
       meta: {
         title: 'child_task',
@@ -22,7 +22,7 @@ const childTaskRoutes = {
       },
     },
     {
-      path: '/prenttasks',
+      path: 'prenttasks',
       component: () => import('@/views/child-task/components/ListParentTask'),
       meta: {
         title: 'Parent task',
@@ -30,6 +30,16 @@ const childTaskRoutes = {
         permission: ['edit-task'],
       },
     },
+    {
+      path: 'create/:id',
+      component: () => import('@/views/child-task/ChildTaskCreate'),
+      meta: {
+        title: 'Child Task Create',
+        icon: 'skill',
+        permission: ['edit-task'],
+      },
+    },
+
   ],
 };
 

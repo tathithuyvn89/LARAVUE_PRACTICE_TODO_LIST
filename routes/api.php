@@ -37,12 +37,17 @@ Route::namespace('Api')->group(function() {
         Route::apiResource('groups', 'GroupController')->except('destroy');
         Route::delete('groups/delete','GroupController@forceDelete'); 
         Route::apiResource('tasks', 'TaskController')->except('destroy');
+        
         Route::apiResource('childTasks', 'ChildTaskController');
         Route::delete('tasks/delete','TaskController@forceDelete');  
         Route::get('list','TaskController@getList'); //get List not use pagenation
         // Custom routes
         Route::put('users/{user}', 'UserController@update');
         Route::get('users/{user}/permissions', 'UserController@permissions')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
+        Route::get('users/{user}/tasksNotComplete','UserController@getTaskListNotCompleteByUserId');
+        Route::get('users/{user}/tasksCompleted','UserController@getTaskListCompleteByUserId');
+        Route::get('users/{user}/tasksNotActive','UserController@getTaskListNotYetAcitveByUserId');
+        
         Route::put('users/{user}/permissions', 'UserController@updatePermissions')->middleware('permission:' .Acl::PERMISSION_PERMISSION_MANAGE);
         Route::get('roles/{role}/permissions', 'RoleController@permissions')->middleware('permission:' . Acl::PERMISSION_PERMISSION_MANAGE);
     });

@@ -82,24 +82,6 @@ class TaskController extends Controller
           'message'=>'Task not found'
           ],404);
       }
-      
-    //   $validator= Validator::make($request->all(),$this->getValidationRules(false));
-
-    //   if($validator->fails()) {
-    //       return response()->json([
-    //           'errors'=>$validator->errors()
-    //       ],403);
-    //   } else {
-        //   $task->title= $request->get('title');
-        //   $task->start_date= $request->get('start_date');
-        //   $task->finish_date = $request->get('finish_date');
-        //    $task->user_id = $request->get('user');  
-        //    $task->group_id = $request->get('group');
-        //    $task->content = $request->get('content');
-        //    $task->active = $request->get('active'); 
-        //    $task->active_date = $request->get('active_date');
-        //    $task->progress = $request->get('progress');
-        //     $task->complete_date = $request->get('complete_date');
          
           try {
             if(!empty($request->get('title'))){
@@ -142,7 +124,6 @@ class TaskController extends Controller
          
           $task->save();
           } catch (Exception $e) {
-           dd('meno');
           }
           return new TaskResource($task);
       }
@@ -180,6 +161,8 @@ class TaskController extends Controller
             'finish_date'=> 'required'
         ];
     }
+   
+   
    
    
 }

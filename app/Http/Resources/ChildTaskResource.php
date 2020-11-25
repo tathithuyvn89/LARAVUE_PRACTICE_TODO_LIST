@@ -19,7 +19,6 @@ class ChildTaskResource extends JsonResource
            'name'=>$this->name,
            'necessary_time'=>$this->necessary_time, 
            'parent_task'=>$this->task,
-        //    'parent_task'=> Task::find($this->parent_task_id),
         ];
     }
 }

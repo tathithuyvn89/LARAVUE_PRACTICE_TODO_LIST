@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Validator;
-
+use App\Http\Resources\TaskResource;
 /**
  * Class UserController
  *
@@ -209,6 +209,42 @@ class UserController extends BaseController
         }
     }
 
+    public function getTaskListNotCompleteByUserId($id) {
+        try {
+           $user = User::findOrFail($id);
+
+           $tasks = $user->tasks;
+         $getTasks= $tasks->where('complete_date','=',null);
+          return TaskResource::collection($getTasks);
+        } catch (ModelNotFoundException $exception) {
+           return response()->json(['error'=>'Not found'],404);
+        }
+    }
+
+    public function getTaskListCompleteByUserId($id){
+         try {
+           $user = User::findOrFail($id);
+
+           $tasks = $user->tasks;
+         $getTasks= $tasks->where('complete_date','!=',null);
+          return TaskResource::collection($getTasks);
+        } catch (ModelNotFoundException $exception) {
+           return response()->json(['error'=>'Not found'],404);
+        }
+    }
+   
+    public function getTaskListNotYetAcitveByUserId ($id) {
+         try {
+           $user = User::findOrFail($id);
+
+           $tasks = $user->tasks;
+         $getTasks= $tasks->where('active',0);
+          return TaskResource::collection($getTasks);
+        } catch (ModelNotFoundException $exception) {
+           return response()->json(['error'=>'Not found'],404);
+        }
+    }
+    
     /**
      * @param bool $isNew
      * @return array

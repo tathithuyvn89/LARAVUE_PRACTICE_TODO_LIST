@@ -5,7 +5,24 @@ class UserResource extends Resource {
   constructor() {
     super('users');
   }
-
+  tasksNotYetActiveByUserId(id) {
+    return request({
+      url: '/' + this.uri + '/' + id + '/tasksNotActive',
+      method: 'get',
+    });
+  }
+  tasksNotCompleteByUserId(id) {
+    return request({
+      url: '/' + this.uri + '/' + id + '/tasksNotComplete',
+      method: 'get',
+    });
+  }
+  tasksCompletedByUserId(id) {
+    return request({
+      url: '/' + this.uri + '/' + id + '/tasksCompleted',
+      method: 'get',
+    });
+  }
   permissions(id) {
     return request({
       url: '/' + this.uri + '/' + id + '/permissions',
@@ -14,7 +31,7 @@ class UserResource extends Resource {
   }
   listUser() {
     return request({
-      url: 'userslist',
+      url: '/userslist',
       method: 'get',
     });
   }
@@ -29,3 +46,4 @@ class UserResource extends Resource {
 }
 
 export { UserResource as default };
+
