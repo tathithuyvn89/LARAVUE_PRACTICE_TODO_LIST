@@ -20,12 +20,13 @@ class TaskResource extends JsonResource
             'content'=>$this->content,
             'start_date'=>$this->start_date,
             'finish_date'=>$this->finish_date,
-             'active'=>$this->active,
-             'active_date'=>$this->active_date,
-             'progress'=>$this->progress,
-             'complete_date'=>$this->complete_date,
+            'active'=>$this->active,
+            'active_date'=>$this->active_date,
+            'progress'=>$this->progress,
+            'complete_date'=>$this->complete_date,
             'user'=>$this->user,
             'group'=>$this->group,
+            "child_tasks"=>$this->childTasks,
         ];
     }
 }

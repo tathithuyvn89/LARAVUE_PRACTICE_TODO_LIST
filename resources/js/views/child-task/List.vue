@@ -9,21 +9,6 @@
         clearable
         @keyup.enter.native="handleFilter"
       />
-      <!-- <el-select
-        v-model="listQuery.group"
-        placeholder="Please choose group i18n"
-        clearable
-        style="width: 90px"
-        class="filter-item"
-        @change="handleFilter"
-      >
-        <el-option
-          v-for="item in groups"
-          :key="item.id"
-          :label="item.name | uppercaseFirst"
-          :value="item.name"
-        />
-      </el-select> -->
       <el-button
         type="primary"
         class="filter-item"
@@ -55,7 +40,9 @@
       <el-tab-pane
         label="Task doing"
         name="third"
-      >Task Not Complete table</el-tab-pane>
+      >
+        <ChildTaskList :childtasks="listChildTask" />
+      </el-tab-pane>
       <el-tab-pane
         label="Task complete"
         name="fourth"
@@ -67,17 +54,19 @@
 <script>
 import TaskCompleted from './components/TaskCompleted';
 import TaskNotComplete from './components/TaskNotComplete';
+import ChildTaskList from './components/ChildTaskList';
 import UserResoure from '@/api/user';
 const userResource = new UserResoure();
 import { updateTask } from '@/api/task';
-
+import { fetchListTask } from '@/api/child_task';
 export default {
-  components: { TaskCompleted, TaskNotComplete },
+  components: { TaskCompleted, TaskNotComplete, ChildTaskList },
   data() {
     return {
       activeName: 'first',
       tasksCompleted: [],
       tasksNotComplete: [],
+      listChildTask: [],
       userId: this.$store.getters.userId,
       listQuery: {
         keyword: '',
@@ -88,10 +77,11 @@ export default {
   created() {
     this.getTasksCompleted();
     this.getTasksNotComplete();
+    this.getChildTaskNotDone();
   },
   methods: {
+
     updateCompleteDate(dataFromChildComponent) {
-      console.log('this is data tu con chuyen sang', dataFromChildComponent);
       updateTask({ complete_date: dataFromChildComponent.complete_date }, dataFromChildComponent.taskId).then((response) => {
         if (response.data !== null) {
           this.getTasksNotComplete();
@@ -105,20 +95,21 @@ export default {
       });
     },
     decreaseProccess(dataFromChildComponent) {
-      console.log('This is data from decrease proccess', dataFromChildComponent);
-
       updateTask({ progress: dataFromChildComponent.percentage }, dataFromChildComponent.taskId).then((response) => {
-        console.log('This is reponse when edit active of task', response);
       });
       this.getTasksNotComplete();
       this.getTasksCompleted();
     },
     increaseProccess(dataFromChildComponent){
-      console.log('This is data from increase proccess', dataFromChildComponent);
       updateTask({ progress: dataFromChildComponent.percentage }, dataFromChildComponent.taskId).then((response) => {
-        console.log('This is reponse when edit active of task', response);
+
       });
       this.getTasksNotComplete();
+    },
+    async getChildTaskNotDone(){
+      const childTasksNotDone = await fetchListTask();
+      this.listChildTask = childTasksNotDone.data;
+      console.log('Thi is not complete Done', childTasksNotDone);
     },
     async getTasksNotComplete(){
       const tasksNotCompleteData = await userResource.tasksNotCompleteByUserId(this.userId);

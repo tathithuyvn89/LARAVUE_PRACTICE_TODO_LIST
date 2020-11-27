@@ -19,6 +19,6 @@ class Task extends Model
     }
 
     public function childTasks() {
-        return $this->hasMany('App\Laravue\Models\ChildTask');
+        return $this->hasMany('App\Laravue\Models\ChildTask','parent_task_id');
     }
 }

@@ -153,7 +153,6 @@ class TaskController extends Controller
       return TaskResource::collection(Task::all());
      
     }
- 
     private function getValidationRules($isNew=true) {
         return [
             'title'=> $isNew ? 'required|unique:tasks' : 'required',

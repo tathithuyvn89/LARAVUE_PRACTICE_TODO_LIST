@@ -17,6 +17,7 @@ class CreateChildTasksTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('necessary_time');
+            $table->tinyInteger('done')->default(0);
             $table->foreignId('parent_task_id')->constrained('tasks')->onDelete('restrict');
         });
     }

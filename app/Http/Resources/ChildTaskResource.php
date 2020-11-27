@@ -18,6 +18,7 @@ class ChildTaskResource extends JsonResource
             'id'=>$this->id,
            'name'=>$this->name,
            'necessary_time'=>$this->necessary_time, 
+           'status'=>$this->done,
            'parent_task'=>$this->task,
         ];
     }

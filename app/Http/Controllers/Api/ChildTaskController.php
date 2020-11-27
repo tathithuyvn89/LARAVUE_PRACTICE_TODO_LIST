@@ -26,20 +26,40 @@ class ChildTaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-      $validator = Validator::make($request->all(),$this->getValidationRules());
+    { 
+        if(empty($request->list)) {
+           $validator = Validator::make($request->all(),$this->getValidationRules());
 
-      if($validator->fails()){
+          if($validator->fails()){
           return response()->json([
               'errors'=>$validator->errors(),
           ],403);
-      }
-     $newChildTask= ChildTask::create([
+          }
+          $newChildTask= ChildTask::create([
           'name'=> $request->get('name'),
           'necessary_time'=>$request->get('necessary_time'),
           'parent_task_id'=>$request->get('parent_task'),
-      ]);
-      return new ChildTaskResource($newChildTask);
+          'done'=>$request->get('done'),
+        ]);
+        return new ChildTaskResource($newChildTask);
+        } else {
+            foreach($request->list as $data) {
+                $validator = Validator::make($data,$this->getValidationRules());
+                if($validator->fails()) {
+                    return response()->json([
+                        'errors'=>$validator->errors(),
+                      ],403);
+                }
+                ChildTask::create([
+                 'name'=> $data['name'],
+                 'necessary_time'=>$data['necessary_time'],
+                 'parent_task_id'=>$data['parent_task']
+                ]);
+            }
+
+            return response()->json(['message'=>'Create success'],200);
+        }
+    
     }
 
     /**
@@ -67,21 +87,41 @@ class ChildTaskController extends Controller
     public function update(Request $request, $id)
     {   
         $childTaskDB = ChildTask::findOrFail($id);
-        if($childTaskDB === null){
-            return response()->json([
-                'error'=>'Not Found'
-            ],404); 
-        } else {
-             $validator = Validator::make($request->all(),$this->getValidationRules());
-             $childTaskDB->name = $request->get('name');
-             if($request->get('necessary_time')!=='') {
-                $childTaskDB->necessary_time = $request->get('necessary_time');
-             }
-             
-             $childTaskDB->parent_task_id = $request->get('parent_task');
-             $childTaskDB->save();
-             return new ChildTaskResource($childTaskDB);
+        if($childTaskDB ===null) {
+            return response()->json(['message'=>'Not Found Data'],403);
         }
+        try { 
+            if(!empty($request->get('name'))) {
+                $childTaskDB->name = $request->get('name');
+            }
+            if(!empty($request->get('necessary_time'))) {
+                $childTaskDB->necessary = $request->get('necessary_time');
+            }
+            if(!empty($request->get('status'))) {
+                $childTaskDB->done = $request->get('status');
+            }
+            $childTaskDB->save();
+         return response()->json(['message'=>'Update success'],200);
+        }catch(Exception $ex){
+          return response()->json(['message'=>'Error da xay ra'],500);
+        }
+        // Se khong can validate neu chi update 1 truong 1. Vi vay khong can update cai nay.
+        // Neu muon update truong nao thi chi can truyen du lieu vao truong day thoi
+        // if($childTaskDB === null){
+        //     return response()->json([
+        //         'error'=>'Not Found'
+        //     ],404); 
+        // } else {
+        //      $validator = Validator::make($request->all(),$this->getValidationRules());
+        //      $childTaskDB->name = $request->get('name');
+        //      if($request->get('necessary_time')!=='') {
+        //         $childTaskDB->necessary_time = $request->get('necessary_time');
+        //      }
+             
+        //      $childTaskDB->parent_task_id = $request->get('parent_task');
+        //      $childTaskDB->save();
+        //      return new ChildTaskResource($childTaskDB);
+        // }
          
     }
 
@@ -105,12 +145,13 @@ class ChildTaskController extends Controller
             ],200); 
         }
     }
-
+   
     private function getValidationRules() {
         return [
             'name'=>'required',
             'necessary_time'=>'required',
-            'parent_task_id'=>'required',
+            'parent_task'=>'required',
         ];
     }
+
 }
