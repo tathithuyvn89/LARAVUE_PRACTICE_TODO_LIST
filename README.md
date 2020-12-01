@@ -1,3 +1,6 @@
+# Ngay thang trong Laravel
+https://www.digitalocean.com/community/tutorials/easier-datetime-in-laravel-and-php-with-carbon
+#======================
 <p align="center">
   <img width="320" src="https://cp5.sgp1.cdn.digitaloceanspaces.com/zoro/laravue-cdn/laravue-logo-line.png">
 </p>
