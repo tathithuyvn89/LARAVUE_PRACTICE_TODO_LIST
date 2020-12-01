@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 use App\Laravue\Models\Task;
 use App\Laravue\Models\Group;
 use App\Http\Resources\TaskResource;
@@ -45,7 +45,7 @@ class TaskController extends Controller
 
   
     public function store(Request $request)
-    {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    {                                                                                                                                                                              
         foreach ($request->list as $data) {
             Task::create([
                 'title'=>$data['title'],
@@ -65,12 +65,16 @@ class TaskController extends Controller
     {
         try {
            $task = Task::findOrFail($id);
+           $start = Carbon::parse($task->start_date);
+           $dayOfWeek = $start->dayOfWeek;
+          $end = Carbon::parse($task->finish_date);
+         $days = $end->diffInDays($start);
         } catch (ModelNotFoundException $exception) {
            return response()->json(['error'=>'Not found'],404);
             // return back()->withError($exception->getMessage())->withInput();
         }
-         
-        return new TaskResource($task);
+         return response()->json(['data'=>new TaskResource($task),'statistic'=> ['diffDay'=>$days,'dayOfWeek'=>$dayOfWeek]]);
+        // return new TaskResource($task);
        
     }
 

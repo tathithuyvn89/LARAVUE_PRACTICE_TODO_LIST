@@ -31,13 +31,24 @@ const childTaskRoutes = {
       },
     },
     {
-      path: 'create/:id',
-      component: () => import('@/views/child-task/ChildTaskCreate'),
+      path: 'prenttasks/:id',
+      component: () => import('@/views/child-task/ListChildTaskByParentTask'),
+      meta: {
+        title: 'Child task by parent',
+        icon: 'skill',
+        permission: ['edit-task'],
+      },
+      hidden: true,
+    },
+    {
+      path: 'edit/:id',
+      component: () => import('@/views/child-task/EditChildTask'),
       meta: {
         title: 'Child Task Create',
         icon: 'skill',
         permission: ['edit-task'],
       },
+      hidden: true,
     },
 
   ],

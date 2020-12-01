@@ -10,7 +10,13 @@
       prop="id"
       label="ID i18n"
       sortable
-    />
+    >
+      <template slot-scope="scope">
+        <router-link
+          :to="'/childtask/prenttasks/' + scope.row.id"
+        ><span>{{ scope.row.id }}</span></router-link>
+      </template>
+    </el-table-column>
     <el-table-column
       prop="title"
       label="Tilte i18n"

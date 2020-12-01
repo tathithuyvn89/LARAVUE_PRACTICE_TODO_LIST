@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="childtasks"
+    :data="childTasksNotComplete"
     style="width: 100%"
   >
     <el-table-column
@@ -35,7 +35,7 @@
 <script>
 export default {
   props: {
-    childtasks: {
+    childTasksNotComplete: {
       type: Array,
       default: null,
     },

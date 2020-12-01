@@ -9,22 +9,24 @@ use App\Laravue\Models\ChildTask;
 use Validator;
 class ChildTaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
       return ChildTaskResource::collection(ChildTask::all());
     }
+    
+    // public function allChildTaskNotDoneByUserId(Request $request) {
+    //    try {
+    //        $user = User::findOrFail($request->get('userId'));
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //        $tasks = $user->tasks;
+    //      $getTasks= $tasks->where('complete_date','=',null);
+    //       return TaskResource::collection($getTasks);
+    //     } catch (ModelNotFoundException $exception) {
+    //        return response()->json(['error'=>'Not found'],404);
+    //     }
+     
+
+    // }
     public function store(Request $request)
     { 
         if(empty($request->list)) {
@@ -95,13 +97,13 @@ class ChildTaskController extends Controller
                 $childTaskDB->name = $request->get('name');
             }
             if(!empty($request->get('necessary_time'))) {
-                $childTaskDB->necessary = $request->get('necessary_time');
+                $childTaskDB->necessary_time = $request->get('necessary_time');
             }
             if(!empty($request->get('status'))) {
                 $childTaskDB->done = $request->get('status');
             }
             $childTaskDB->save();
-         return response()->json(['message'=>'Update success'],200);
+         return response()->json(['message'=>'Update success','data'=>$childTaskDB],200);
         }catch(Exception $ex){
           return response()->json(['message'=>'Error da xay ra'],500);
         }

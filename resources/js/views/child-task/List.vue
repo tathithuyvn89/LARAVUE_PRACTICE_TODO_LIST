@@ -35,18 +35,9 @@
           @increase="increaseProccess"
           @decrease="decreaseProccess"
           @completeDate_input="updateCompleteDate"
+          @emitData="createChildTask"
         />
       </el-tab-pane>
-      <el-tab-pane
-        label="Task doing"
-        name="third"
-      >
-        <ChildTaskList :childtasks="listChildTask" />
-      </el-tab-pane>
-      <el-tab-pane
-        label="Task complete"
-        name="fourth"
-      >Task Complete Table</el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -54,19 +45,19 @@
 <script>
 import TaskCompleted from './components/TaskCompleted';
 import TaskNotComplete from './components/TaskNotComplete';
-import ChildTaskList from './components/ChildTaskList';
+
 import UserResoure from '@/api/user';
 const userResource = new UserResoure();
 import { updateTask } from '@/api/task';
-import { fetchListTask } from '@/api/child_task';
+import { createChildTask } from '@/api/child_task';
 export default {
-  components: { TaskCompleted, TaskNotComplete, ChildTaskList },
+  components: { TaskCompleted, TaskNotComplete },
   data() {
     return {
       activeName: 'first',
       tasksCompleted: [],
       tasksNotComplete: [],
-      listChildTask: [],
+
       userId: this.$store.getters.userId,
       listQuery: {
         keyword: '',
@@ -77,10 +68,24 @@ export default {
   created() {
     this.getTasksCompleted();
     this.getTasksNotComplete();
-    this.getChildTaskNotDone();
+    // this.getChildTaskNotDone();
   },
   methods: {
-
+    async createChildTask(value) {
+      console.log('Thi is value emit', value);
+      const responseData = await createChildTask({ list: value });
+      if (responseData.message === 'Create success') {
+        this.$message({
+          message: 'Create new task success',
+          type: 'success',
+        });
+      } else {
+        this.$message({
+          message: 'Create new task fails',
+          type: 'warning',
+        });
+      }
+    },
     updateCompleteDate(dataFromChildComponent) {
       updateTask({ complete_date: dataFromChildComponent.complete_date }, dataFromChildComponent.taskId).then((response) => {
         if (response.data !== null) {
@@ -106,11 +111,7 @@ export default {
       });
       this.getTasksNotComplete();
     },
-    async getChildTaskNotDone(){
-      const childTasksNotDone = await fetchListTask();
-      this.listChildTask = childTasksNotDone.data;
-      console.log('Thi is not complete Done', childTasksNotDone);
-    },
+
     async getTasksNotComplete(){
       const tasksNotCompleteData = await userResource.tasksNotCompleteByUserId(this.userId);
       this.tasksNotComplete = tasksNotCompleteData.data;

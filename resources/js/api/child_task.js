@@ -8,27 +8,27 @@ export function fetchListTask() {
   });
 }
 
-export function fetchTask(id) {
+export function fetchChildTask(id) {
   return request({
     url: '/childTasks/' + id,
     method: 'get',
   });
 }
-export function createTask(data) {
+export function createChildTask(data) {
   return request({
-    url: '/tasks',
+    url: '/childTasks',
     method: 'post',
     data: data,
   });
 }
-export function updateTask(data, id) {
+export function updateChildTask(data, id) {
   return request({
     url: '/childTasks/' + id,
     method: 'put',
     data: data,
   });
 }
-export function forceDelete(id) {
+export function forceDeleteChildTask(id) {
   return request({
     url: '/childTasks/' + id,
     method: 'delete',
