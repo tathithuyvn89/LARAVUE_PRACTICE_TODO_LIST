@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
-
+$DATABASE_URL = parse_url('postgres://koxmxusebkztpt:f6e6b38ab55500e72f0db23fa165fd3987e9470c02753c651f3a4b88c8389c38@ec2-54-205-26-79.compute-1.amazonaws.com:5432/d9vcpig0q70a7n');
 return [
 
     /*
@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,11 +66,11 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => $DATABASE_URL('host'),
+            'port' =>  $DATABASE_URL('post'),
+            'database' => ltrim($DATABASE_URL['path'],'/'),
+            'username' => $DATABASE_URL('tathithuyvn89@gmail.com'),
+            'password' => $DATABASE_URL('Veho2020'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
