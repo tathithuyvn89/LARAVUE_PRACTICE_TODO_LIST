@@ -1,5 +1,42 @@
 <template>
-  <div>
+
+  <div class="child-task-container">
+    <div class="filter-container">
+      <el-input
+        v-model="name"
+        placeholder="Name i18n"
+        style="width: 200px"
+        class="filter-item"
+        clearable
+        @keyup.enter.native="createNewChildTask"
+      />
+
+      <el-select
+        v-model="necessary_time"
+        style="width: 17  0px"
+        placeholder="Select necessary time"
+        clearable
+        filterable
+        class="filter-item"
+        @keyup.enter.native="createNewChildTask"
+      >
+        <el-option
+          v-for="item in listTime"
+          :key="item.id"
+          :label="item.value"
+          :value="item.id"
+        />
+      </el-select>
+      <el-button
+        type="success"
+        class="filter-item"
+        icon="el-icon-plus"
+        @click="createNewChildTask"
+      >
+        Create New Child Task
+      </el-button>
+    </div>
+
     <el-table
       :data="childTasks"
       style="width: 70%"
@@ -32,10 +69,18 @@
         label="Operations"
       >
         <template slot-scope="scope">
-          <el-button size="small" @click="editChildTask(scope.row.id)">More ...</el-button>
+          <el-button size="small" :disabled="scope.row.done === 2" @click="editChildTask(scope.row.id)">More ...</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div class="statitic-data">
+      <h3>Thoi gian duoc cap:{{ statisticData.diffDayExceptHoliday }} phut</h3>
+      <h3>Thoi gian nguoi duoc phan cong uoc tinh: {{ statisticData.totalTimeOfChildTask }} phut</h3>
+      <div>
+        <div v-if="statisticData.compareTime<0" style="color:red;">Ban da uoc luong qua thoi gian quy dinh {{ statisticData.compareTime }} phut. Neu co the xin hay dieu chinh lai</div>
+        <div v-else style="color:green;">>Ban van con {{ statisticData.compareTime }} de thuc hien task nay</div>
+      </div>
+    </div>
     <!-- +++++++++++++++++++++++   DIALOG EDIT   ++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <el-dialog title="Edit childTask" :visible.sync="dialogFormVisible">
       <div v-loading="childTaskCreating">
@@ -73,13 +118,16 @@
 
 import { fetchTask } from '@/api/task';
 
-import { updateChildTask, fetchChildTask, forceDeleteChildTask } from '@/api/child_task';
+import { updateChildTask, fetchChildTask, forceDeleteChildTask, createChildTask } from '@/api/child_task';
 
 export default {
   data(){
     return {
       childTasks: [],
       form: { name: '', necessary_time: '' },
+      name: '',
+      statisticData: {},
+      necessary_time: '',
       selectedItem: {},
       childTaskCreating: false,
       rules: {
@@ -101,6 +149,38 @@ export default {
     this.getChildTaskByParent();
   },
   methods: {
+    createNewChildTask(){
+      if (this.name === '' && this.necessary_time !== '') {
+        this.$message({
+          message: 'Please input Name',
+          type: 'warning',
+        });
+      } else if (this.name !== '' && this.necessary_time === ''){
+        this.$message({
+          message: 'Please select necessary time',
+          type: 'warning',
+        });
+      } else if (this.name === '' && this.necessary_time === '') {
+        this.$message({
+          message: 'Please input Name and Select time',
+          type: 'warning',
+        });
+      } else {
+        const id = this.$route.params && this.$route.params.id;
+        createChildTask({ list: [{ 'name': this.name, 'necessary_time': this.necessary_time, 'parent_task': id }] }).then(res => {
+          console.log(res);
+          this.$message({
+            message: 'Create new ChildTask success!',
+            type: 'success',
+          });
+          this.getChildTaskByParent();
+          this.name = '';
+          this.necessary_time = '';
+        }).catch(err => {
+          console.log(err);
+        });
+      }
+    },
     deleteChildTask(){
       forceDeleteChildTask(this.form.id).then(response => {
         console.log('This is from detete function', response);
@@ -152,6 +232,7 @@ export default {
 
       const responData = await fetchTask(id);
       console.log('This is response data', responData);
+      this.statisticData = responData.statistic;
       this.childTasks = responData.data.child_tasks;
       for (let i = 0; i < this.childTasks.length; i++){
         this.childTasks[i].necessary_time = this.tranferTime(this.childTasks[i].necessary_time);

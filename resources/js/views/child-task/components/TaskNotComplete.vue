@@ -106,6 +106,7 @@
             <el-button
               slot="reference"
               type="warning"
+              :disabled="scope.row.progress < 100"
               @click="visible = true"
             >Update complete datedf i18n</el-button>
 

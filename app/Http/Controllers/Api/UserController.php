@@ -70,7 +70,7 @@ class UserController extends BaseController
         );
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 403);
+            return response()->json(['errors' => $validator->errors()],200);
         } else {
             $params = $request->all();
             $user = User::create([

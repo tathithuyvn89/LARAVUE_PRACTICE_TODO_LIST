@@ -40,6 +40,11 @@
       label="Complete date i18n"
       sortable
     />
+    <el-table-column
+      prop="complete_level"
+      label="Muc do hoan thanh i18n"
+      sortable
+    />
   </el-table>
 
 </template>

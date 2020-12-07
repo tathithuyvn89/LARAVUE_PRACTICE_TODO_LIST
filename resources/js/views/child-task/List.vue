@@ -119,6 +119,10 @@ export default {
     async getTasksCompleted(){
       const tasksCompletedData = await userResource.tasksCompletedByUserId(this.userId);
       this.tasksCompleted = tasksCompletedData.data;
+      // for (let i = 0; i < data.length; i++) {
+      //   const diffDate = this.calculateCompleteLevels(data[i].complete_date, data[i].finish_date);
+      //   this.tasksCompleted.push({ id: data[i].id, title: data[i].title, content: data[i].content, start_date: data[i].start_date, finish_date: data[i].finish_date, complete_date: data[i].complete_date, complete_level: diffDate });
+      // }
     },
     handleClick(tab, event) {
       console.log('this is tab selected', tab._props);
@@ -127,6 +131,27 @@ export default {
     },
     handleFilter(){
 
+    },
+    calculateCompleteLevels(dateStr1, dateStr2) {
+      var date1 = new Date(dateStr1);
+      var date2 = new Date(dateStr2);
+      const Difference_In_Time = date2.getTime() - date1.getTime();
+      const Difference_In_Day = Difference_In_Time / (1000 * 3600 * 24);
+      var dates = [];
+      var countDate = 0;
+      for (let i = 1; i <= Difference_In_Day; i++){
+        dates.push(this.addDays(date1, i * 24 * 60 * 60 * 1000));
+      }
+      console.log('Nhung ngay trong mang', dates);
+      for (let i = 0; i < dates.length; i++){
+        if (dates[i].getDay() !== 0 || dates[i].getDay() !== 0){
+          countDate++;
+        }
+      }
+      return countDate;
+    },
+    addDays(theDate, days) {
+      return new Date(theDate.getTime() + days * 24 * 60 * 60 * 1000);
     },
   },
 };

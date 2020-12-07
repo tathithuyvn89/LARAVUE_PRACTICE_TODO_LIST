@@ -91,7 +91,9 @@
     </el-dialog>
 
     <el-dialog :title="'Create new user'" :visible.sync="dialogFormVisible">
+
       <div v-loading="userCreating" class="form-container">
+        <div style="color:red;"><span>{{ messageDialogForm }}</span></div>
         <el-form ref="userForm" :rules="rules" :model="newUser" label-position="left" label-width="150px" style="max-width: 500px;">
           <el-form-item :label="$t('user.role')" prop="role">
             <el-select v-model="newUser.role" class="filter-item" placeholder="Please select role">
@@ -148,6 +150,7 @@ export default {
       }
     };
     return {
+      messageDialogForm: '',
       list: null,
       total: 0,
       loading: true,
@@ -173,7 +176,7 @@ export default {
       },
       rules: {
         role: [{ required: true, message: 'Role is required', trigger: 'change' }],
-        name: [{ required: true, message: 'Name is required', trigger: 'blur' }],
+        // name: [{ required: true, message: 'Name is required', trigger: 'blur' }],
         email: [
           { required: true, message: 'Email is required', trigger: 'blur' },
           { type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change'] },
@@ -340,14 +343,23 @@ export default {
           userResource
             .store(this.newUser)
             .then(response => {
-              this.$message({
-                message: 'New user ' + this.newUser.name + '(' + this.newUser.email + ') has been created successfully.',
-                type: 'success',
-                duration: 5 * 1000,
-              });
-              this.resetNewUser();
-              this.dialogFormVisible = false;
-              this.handleFilter();
+              if (response.data){
+                this.$message({
+                  message: 'New user has been created successfully.' + response.data,
+                  type: 'success',
+                  duration: 5 * 1000,
+                });
+                this.resetNewUser();
+                this.dialogFormVisible = false;
+                this.handleFilter();
+              } else {
+                if (response.errors.email){
+                  console.log('Da vao day roi');
+                  this.messageDialogForm = 'Cai email nay da duoc su dung roi day';
+                } else {
+                  this.messageDialogForm = 'Form is wrong Fomat. Please check';
+                }
+              }
             })
             .catch(error => {
               console.log(error);

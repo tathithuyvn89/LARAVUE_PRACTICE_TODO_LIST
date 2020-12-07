@@ -72,10 +72,10 @@ class ChildTaskController extends Controller
      */
     public function show($id)
     {
-        $childTaskDB = ChildTask::findOrFail($id);
-        if ($childTaskDB ===  null){
-            return response()->json(['message'=>'Not found resource'],404);
-        }
+        $childTaskDB = ChildTask::find($id);
+       if($childTaskDB ==null){
+           return response()->json(['message'=>'Not Found'],403);
+       }
         return new ChildTaskResource($childTaskDB);
     }
 
@@ -89,9 +89,9 @@ class ChildTaskController extends Controller
     public function update(Request $request, $id)
     {   
         $childTaskDB = ChildTask::findOrFail($id);
-        if($childTaskDB ===null) {
-            return response()->json(['message'=>'Not Found Data'],403);
-        }
+        // if($childTaskDB ===null) {
+        //     return response()->json(['message'=>'Not Found Data'],403);
+        // }
         try { 
             if(!empty($request->get('name'))) {
                 $childTaskDB->name = $request->get('name');
@@ -135,11 +135,11 @@ class ChildTaskController extends Controller
      */
     public function destroy($id)
     {
-       $childTaskDB = ChildTask::findOrFail($id);
-        if($childTaskDB === null){
+       $childTaskDB = ChildTask::find($id);
+        if($childTaskDB == null){
             return response()->json([
                 'error'=>'Not Found'
-            ],404); 
+            ],403); 
         } else {
             $childTaskDB->delete();
             return response()->json([

@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use Carbon\Carbon;
 class TaskResource extends JsonResource
 {
     /**
@@ -14,6 +14,28 @@ class TaskResource extends JsonResource
      */
     public function toArray($request)
     {
+
+      //  $start = Carbon::parse($this->finish_date); 
+      //      $workDays =0;
+      //      $my_day_arr= [];
+      //      $my_day_off_week =[];
+      //      if($this->complete_date!=null){
+      //         $end = Carbon::parse($this->complete_date);
+      //      $days = $end->diffInDays($start);
+      //     for($i=0; $i<$days;$i++) {
+      //       $start->addDays();
+      //     array_push($my_day_off_week,$start->dayOfWeek);   
+      //     }
+      //     for($i=0;$i<sizeof($my_day_off_week); $i++) {
+      //       if($my_day_off_week[$i] !=6 &&  $my_day_off_week[$i] !=0){
+      //           $workDays++;  
+      //       } 
+      //     }
+        
+      //      }else {
+      //        $workDays= -100;
+      //      }
+          
         return [
             'id'=>$this->id,
             'title'=>$this->title,
@@ -24,9 +46,33 @@ class TaskResource extends JsonResource
             'active_date'=>$this->active_date,
             'progress'=>$this->progress,
             'complete_date'=>$this->complete_date,
+            'complete_level'=>$this->calculateCompleteLevel($this->finish_date,$this->complete_date),
             'user'=>$this->user,
             'group'=>$this->group,
             "child_tasks"=>$this->childTasks,
         ];
+    }
+    private function calculateCompleteLevel($start, $end){
+         $start = Carbon::parse($start); 
+           $workDays =0;
+           $my_day_arr= [];
+           $my_day_off_week =[];
+           if($end!=null){
+              $end = Carbon::parse($end);
+           $days = $end->diffInDays($start);
+          for($i=0; $i<$days;$i++) {
+            $start->addDays();
+          array_push($my_day_off_week,$start->dayOfWeek);   
+          }
+          for($i=0;$i<sizeof($my_day_off_week); $i++) {
+            if($my_day_off_week[$i] !=6 &&  $my_day_off_week[$i] !=0){
+                $workDays++;  
+            } 
+          }
+         return $workDays;
+           }else {
+             return 'NAN';
+           }
+          
     }
 }

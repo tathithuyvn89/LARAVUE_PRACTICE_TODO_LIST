@@ -65,15 +65,31 @@ class TaskController extends Controller
     {
         try {
            $task = Task::findOrFail($id);
-           $start = Carbon::parse($task->start_date);
-           $dayOfWeek = $start->dayOfWeek;
-          $end = Carbon::parse($task->finish_date);
-         $days = $end->diffInDays($start);
+           $start = Carbon::parse($task->start_date); 
+           $workDays =0;
+           $my_day_arr= [];
+           $my_day_off_week =[];
+           $end = Carbon::parse($task->finish_date);
+           $days = $end->diffInDays($start);
+          for($i=0; $i<$days;$i++) {
+            $start->addDays();
+          array_push($my_day_off_week,$start->dayOfWeek);   
+          }
+          for($i=0;$i<sizeof($my_day_off_week); $i++) {
+            if($my_day_off_week[$i] !=6 &&  $my_day_off_week[$i] !=0){
+                $workDays++;  
+            } 
+          }
+          $child_tasks = $task->childTasks;
+          $necessaryTimeTotal = 0;
+          foreach($child_tasks as $child_task) {
+           $necessaryTimeTotal+= $child_task->necessary_time;
+          }
         } catch (ModelNotFoundException $exception) {
            return response()->json(['error'=>'Not found'],404);
             // return back()->withError($exception->getMessage())->withInput();
         }
-         return response()->json(['data'=>new TaskResource($task),'statistic'=> ['diffDay'=>$days,'dayOfWeek'=>$dayOfWeek]]);
+         return response()->json(['data'=>new TaskResource($task),'statistic'=> ['diffDay'=>$days,'diffDayExceptHoliday'=>($workDays+1)*60*8, 'totalTimeOfChildTask'=>$necessaryTimeTotal,'compareTime'=>($workDays+1)*60*8-$necessaryTimeTotal]]);
         // return new TaskResource($task);
        
     }

@@ -4,6 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,7 +54,43 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    {
+    { 
+         if ($exception instanceof ModelNotFoundException &&
+        $request->wantsJson()) {
+             return response()->json([
+              'error'=>'Not Found Resource'
+             ],404);
+         }
+          if ($exception instanceof Exception &&
+        $request->wantsJson()){
+             return response()->json([
+              'error'=>'Have a error occur'
+             ],500);
+         }
+        if ($exception instanceof RequestException &&
+        $request->wantsJson()){
+             return response()->json([
+              'error'=>'Request was wrong.Please try again'
+             ],400);
+         }
+         if ($exception instanceof AuthenticationException &&
+        $request->wantsJson() ){
+             return response()->json([
+              'error'=>'UnAuthentication'
+             ],401);
+         }
+          if ($exception instanceof HttpException &&
+        $request->wantsJson() ){
+             return response()->json([
+              'error'=>'Http error'
+             ],400);
+         }
+          if ($exception instanceof ValidationException &&
+        $request->wantsJson() ){
+             return response()->json([
+              'error'=>'Format wrong'
+             ],500);
+         }
         return parent::render($request, $exception);
     }
 }
